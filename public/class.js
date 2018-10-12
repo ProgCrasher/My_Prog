@@ -15,13 +15,13 @@ class LivingCreature {
 			[this.x + 1, this.y + 1]
 		]
 	}
-	chooseCell(chooseCell) {
+	chooseCell(chooseCell, cd, cd2, cd3, cd4) {
 		var found = [];
 		for (var i in this.directions) {
 			var x = this.directions[i][0];
 			var y = this.directions[i][1];
 			if (x >= 0 && x < matrix[0].length && y >= 0 && y < matrix.length) {
-				if (matrix[y][x] == chooseCell || matrix[y][x] == cd) {
+				if (matrix[y][x] == chooseCell || matrix[y][x] == cd || matrix[y][x] == cd2 || matrix[y][x] == cd3 || matrix[y][x] == cd4) {
 					found.push(this.directions[i]);
 				}
 			}
@@ -29,6 +29,82 @@ class LivingCreature {
 		return found;
 	}
 
+
+}
+
+////////////////////////////////////
+//Grass
+////////////////////////////////////
+class grass extends LivingCreature {
+	constructor(x, y, index) {
+		super(x, y, index);
+		this.color = "green";
+		this.multiply = 8;
+	}
+	mul() {
+		this.multiply++;
+		var newCell = random(this.chooseCell(0));
+		if (this.multiply >= 3 && newCell) {
+			var newGrass = new grass(newCell[0], newCell[1], this.index);
+			grassArr.push(newGrass);
+			matrix[newCell[1]][newCell[0]] = this.index;
+			this.multiply = 0;
+		}
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//xot utox
+class GrassEater extends LivingCreature {
+	constructor(x, y, index) {
+		super(x, y, index);
+		this.energy = 13;
+	}
+	getNewCoordinates() {
+		this.directions = [
+			[this.x - 1, this.y - 1],
+			[this.x, this.y - 1],
+			[this.x + 1, this.y - 1],
+			[this.x - 1, this.y],
+			[this.x + 1, this.y],
+			[this.x - 1, this.y + 1],
+			[this.x, this.y + 1],
+			[this.x + 1, this.y + 1]
+		];
+	}
+
+
+	chooseCell(character, cd) {
+		this.getNewCoordinates();
+		return super.chooseCell(character, cd);
+	}
 	move() {
 		var newCel = this.chooseCell(0, 1);
 		var card = random(newCel);
@@ -126,62 +202,37 @@ class LivingCreature {
 		}
 	}
 }
-//prosto xot
-class grass extends LivingCreature {
-	constructor(x, y, index) {
-		super(x, y, index);
-		this.color = "green";
-		this.multiply = 8;
-	}
-	mul() {
-		this.multiply++;
-		var newCell = random(this.chooseCell(0));
-		if (this.multiply >= 3 && newCell) {
-			var newGrass = new grass(newCell[0], newCell[1], this.index);
-			grassArr.push(newGrass);
-			matrix[newCell[1]][newCell[0]] = this.index;
-			this.multiply = 0;
-		}
-	}
-
-}
-
-//xot utox
-class GrassEater {
-	constructor(x, y, index) {
-		super(x,y,index);
-		this.energy = 13;
-	}
-	getNewCoordinates() {
-		this.directions = [
-			[this.x - 1, this.y - 1],
-			[this.x, this.y - 1],
-			[this.x + 1, this.y - 1],
-			[this.x - 1, this.y],
-			[this.x + 1, this.y],
-			[this.x - 1, this.y + 1],
-			[this.x, this.y + 1],
-			[this.x + 1, this.y + 1]
-		];
-	}
-
-
-	chooseCell(character, cd) {
-		this.getNewCoordinates();
-		return super.chooseCell(character);
-	}
-
-}
 
 //prosto xot utoxin utox kam gishatich
 
-class Predator {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Predator extends LivingCreature {
 	constructor(x, y, index) {
-		this.x = x;
-		this.y = y;
+		super(x, y, index);
 		this.energy = 11;
-		this.index = index;
-		this.multiply = 0;
 
 	}
 	getNewCoor() {
@@ -198,19 +249,9 @@ class Predator {
 	}
 
 
-	chooseCell(character1, character2) {
+	chooseCell(character, cd) {
 		this.getNewCoor();
-		var found = [];
-		for (var i in this.directions) {
-			var x = this.directions[i][0];
-			var y = this.directions[i][1];
-			if (y >= 0 && y < matrix.length && x >= 0 && x < matrix[0].length) {
-				if (matrix[y][x] == character1 || matrix[y][x] == character2) {
-					found.push(this.directions[i])
-				}
-			}
-		}
-		return found;
+		return super.chooseCell(character, cd);
 	}
 
 
@@ -315,14 +356,39 @@ class Predator {
 	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //darac gishatich
-class VirusPred {
+class VirusPred extends LivingCreature {
 	constructor(x, y, index) {
-		this.x = x;
-		this.y = y;
+		super(x, y, index);
 		this.energy = 11;
-		this.index = index;
-		this.multiply = 0;
 
 	}
 	getNewCoor() {
@@ -339,19 +405,9 @@ class VirusPred {
 	}
 
 
-	chooseCell(character1, character2) {
+	chooseCell(character, cd) {
 		this.getNewCoor();
-		var found = [];
-		for (var i in this.directions) {
-			var x = this.directions[i][0];
-			var y = this.directions[i][1];
-			if (y >= 0 && y < matrix.length && x >= 0 && x < matrix[0].length) {
-				if (matrix[y][x] == character1 || matrix[y][x] == character2) {
-					found.push(this.directions[i])
-				}
-			}
-		}
-		return found;
+		return super.chooseCell(character, cd);
 	}
 
 
@@ -455,15 +511,38 @@ class VirusPred {
 	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Mutant bolorin utox
-class Mutant {
+class Mutant extends LivingCreature {
 	constructor(x, y, index) {
-		this.x = x;
-		this.y = y;
-		this.index = index;
-		this.multiply = 0;
+		super(x, y, index);
 		this.energy = 17;
-		this.directions = [];
 	}
 	largeCoo() {
 		this.directions = [
@@ -486,19 +565,9 @@ class Mutant {
 		];
 	}
 
-	chooseCell(character1, character2, character3, character4, cik) {
+	chooseCell(character, cd, cd2, cd3, cd4) {
 		this.largeCoo();
-		var found = [];
-		for (var i in this.directions) {
-			var x = this.directions[i][0];
-			var y = this.directions[i][1];
-			if (y >= 0 && y < matrix.length && x >= 0 && x < matrix[0].length) {
-				if (matrix[y][x] == character1 || matrix[y][x] == character2 || matrix[y][x] == character3 || matrix[y][x] == character4 || matrix[y][x] == cik) {
-					found.push(this.directions[i])
-				}
-			}
-		}
-		return found;
+		return super.chooseCell(character, cd, cd2, cd3, cd4);
 	}
 
 	move() {
@@ -515,9 +584,12 @@ class Mutant {
 
 			this.x = x;
 			this.y = y;
-
+			this.energy--;
 		}
 
+		if (this.energy < 3) {
+			this.die();
+		}
 	}
 
 	eat() {
@@ -578,10 +650,6 @@ class Mutant {
 
 		else {
 			this.move();
-			this.energy--;
-			if (this.energy < 3) {
-				this.die();
-			}
 		}
 	}
 
@@ -644,16 +712,51 @@ class Mutant {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //aspet
 
-class Knight {
+class Knight extends LivingCreature {
 	constructor(x, y, index) {
-		this.x = x;
-		this.y = y;
-		this.index = index;
-		this.multiply = 0;
+		super(x, y, index);
 		this.energy = 36;
-		this.directions = [];
 	}
 	largeCoo() {
 		this.directions = [
@@ -684,19 +787,9 @@ class Knight {
 		];
 	}
 
-	chooseCell(character1, character2, character3, character4, tik) {
+	chooseCell(character, cd, cd2, cd3, cd4) {
 		this.largeCoo();
-		var found = [];
-		for (var i in this.directions) {
-			var x = this.directions[i][0];
-			var y = this.directions[i][1];
-			if (y >= 0 && y < matrix.length && x >= 0 && x < matrix[0].length) {
-				if (matrix[y][x] == character1 || matrix[y][x] == character2 || matrix[y][x] == character3 || matrix[y][x] == character4 || matrix[y][x] == tik) {
-					found.push(this.directions[i])
-				}
-			}
-		}
-		return found;
+		return super.chooseCell(character, cd, cd2, cd3, cd4);
 	}
 
 	move() {
@@ -718,9 +811,11 @@ class Knight {
 			matrix[y][x] = 5;
 			this.x = x;
 			this.y = y;
-
+			this.energy--;
 		}
-
+		if (this.energy < 3) {
+			this.die();
+		}
 	}
 
 	eat() {
@@ -762,10 +857,7 @@ class Knight {
 		}
 		else {
 			this.move();
-			this.energy--;
-			if (this.energy < 3) {
-				this.die();
-			}
+
 		}
 	}
 
